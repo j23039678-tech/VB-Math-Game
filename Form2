@@ -1,0 +1,19 @@
+Public Class Form2
+    Private Sub ProgressBar1_Click(sender As Object, e As EventArgs) Handles ProgressBar1.Click
+
+    End Sub
+
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        If ProgressBar1.Value < ProgressBar1.Maximum Then
+            ProgressBar1.Value += 1
+            Dim percentage As Integer = CInt((ProgressBar1.Value / ProgressBar1.Maximum) * 100)
+            PercentageLabel.Text = percentage.ToString() & "%"
+        Else
+            Timer1.Stop()
+            Dim level1 As New Level1()
+            level1.Show()
+            Me.Hide()
+        End If
+    End Sub
+
+End Class
