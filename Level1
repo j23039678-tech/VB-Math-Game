@@ -1,0 +1,95 @@
+Public Class Level1
+    Private num1 As Integer
+    Private num2 As Integer
+    Private score As Integer
+    Private rand As Random
+    Private CurrentMath As String
+    Private questionNumber As Integer
+
+    Public Sub New()
+        InitializeComponent()
+        rand = New Random()
+        ResetGame()
+    End Sub
+
+    Private Sub ResetGame()
+        score = 0
+        questionNumber = 1
+        ScoreLabel.Text = $"Score: {score}"
+        LevelLabel.Text = "Level: 1"
+        NextLevelButton.Visible = False
+        GenerateQuestion()
+    End Sub
+
+    Private Sub GenerateQuestion()
+        If score < 5 Then
+            Select Case rand.Next(2)
+                Case 0
+                    CurrentMath = "+"
+                Case 1
+                    CurrentMath = "-"
+            End Select
+
+            If CurrentMath = "+" Then
+                num1 = rand.Next(1, 11)
+                num2 = rand.Next(1, 11)
+                QuestionTitle.Text = $"Question {questionNumber}: What is {num1} + {num2}?"
+            Else
+                num1 = rand.Next(1, 11)
+                num2 = rand.Next(1, num1 + 1)
+                QuestionTitle.Text = $"Question {questionNumber}: What is {num1} - {num2}?"
+            End If
+
+            questionNumber += 1
+        Else
+            QuestionTitle.Text = "Congratulations! You can now go to the next level!"
+            NextLevelButton.Visible = True
+        End If
+    End Sub
+
+    Private Sub SubmitButton_Click(sender As Object, e As EventArgs) Handles SubmitButton.Click
+        Dim Answer As Double
+        If Double.TryParse(AnswerBox.Text, Answer) Then
+            Dim correctAnswer As Double
+
+            Select Case CurrentMath
+                Case "+"
+                    correctAnswer = num1 + num2
+                Case "-"
+                    correctAnswer = num1 - num2
+            End Select
+
+            If Math.Abs(Answer - correctAnswer) < 0.01 Then
+                MessageBox.Show("Correct!")
+                score += 1
+                AnswerBox.Clear()
+                GenerateQuestion()
+            Else
+                MessageBox.Show("Incorrect, try again!")
+            End If
+            ScoreLabel.Text = $"Score: {score}"
+        Else
+            MessageBox.Show("Please enter a valid number.")
+        End If
+    End Sub
+
+    Private Sub SkipButton_Click(sender As Object, e As EventArgs) Handles SkipButton.Click
+        AnswerBox.Clear()
+        GenerateQuestion()
+    End Sub
+
+    Private Sub RestartButton_Click(sender As Object, e As EventArgs) Handles RestartButton.Click
+        ResetGame()
+    End Sub
+
+    Private Sub ExitButton_Click(sender As Object, e As EventArgs) Handles ExitButton.Click
+        Application.Exit()
+    End Sub
+
+    Private Sub NextLevelButton_Click(sender As Object, e As EventArgs) Handles NextLevelButton.Click
+        Dim level2 As New Level2()
+        level2.Show()
+        Me.Hide()
+    End Sub
+
+End Class
