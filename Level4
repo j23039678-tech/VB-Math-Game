@@ -1,0 +1,108 @@
+Imports System.Formats.Asn1.AsnWriter
+
+Public Class Level4
+    Private num1 As Integer
+    Private num2 As Integer
+    Private score As Integer
+    Private rand As Random
+    Private questionNumber As Integer
+    Private CurrentMath As String
+
+    Public Sub New()
+        InitializeComponent()
+        rand = New Random()
+        ResetGame()
+    End Sub
+
+    Private Sub ResetGame()
+        score = 0
+        questionNumber = 1
+        ScoreLabel.Text = $"Score: {score}"
+        LevelLabel.Text = "Level: 4"
+        GenerateQuestion()
+    End Sub
+
+    Private Sub GenerateQuestion()
+        If score < 5 Then
+            Dim operationIndex As Integer = rand.Next(4)
+
+            Select Case operationIndex
+                Case 0
+                    CurrentMath = "+"
+                    num1 = rand.Next(1, 21)
+                    num2 = rand.Next(1, 21)
+                    QuestionTitle.Text = $"Question {questionNumber}: What is {num1} + {num2}?"
+                Case 1
+                    CurrentMath = "-"
+                    num1 = rand.Next(1, 21)
+                    num2 = rand.Next(1, 21)
+                    QuestionTitle.Text = $"Question {questionNumber}: What is {num1} - {num2}?"
+                Case 2
+                    CurrentMath = "*"
+                    num1 = rand.Next(1, 11)
+                    num2 = rand.Next(1, 11)
+                    QuestionTitle.Text = $"Question {questionNumber}: What is {num1} * {num2}?"
+                Case 3
+                    CurrentMath = "/"
+                    num2 = rand.Next(1, 6)
+                    Dim product As Integer = rand.Next(1, 6) * num2
+                    num1 = product
+                    QuestionTitle.Text = $"Question {questionNumber}: What is {num1} / {num2}?"
+            End Select
+
+            questionNumber += 1
+        Else
+            QuestionTitle.Text = "Congratulations! You have finished the game!"
+        End If
+    End Sub
+
+    Private Sub SubmitButton_Click(sender As Object, e As EventArgs) Handles SubmitButton.Click
+        Dim Answer As Double
+        If Double.TryParse(AnswerBox.Text, Answer) Then
+            Dim correctAnswer As Double
+
+            Select Case CurrentMath
+                Case "+"
+                    correctAnswer = num1 + num2
+                Case "-"
+                    correctAnswer = num1 - num2
+                Case "*"
+                    correctAnswer = num1 * num2
+                Case "/"
+                    correctAnswer = num1 / num2
+            End Select
+
+            If Math.Abs(Answer - correctAnswer) < 0.01 Then
+                MessageBox.Show("Correct!")
+                score += 1
+                AnswerBox.Clear()
+                GenerateQuestion()
+            Else
+                MessageBox.Show("Incorrect, try again!")
+            End If
+            ScoreLabel.Text = $"Score: {score}"
+        Else
+            MessageBox.Show("Please enter a valid number.")
+        End If
+    End Sub
+
+    Private Sub SkipButton_Click(sender As Object, e As EventArgs) Handles SkipButton.Click
+        AnswerBox.Clear()
+        GenerateQuestion()
+    End Sub
+
+    Private Sub RestartButton_Click(sender As Object, e As EventArgs) Handles RestartButton.Click
+        ResetGame()
+    End Sub
+
+    Private Sub ExitButton_Click(sender As Object, e As EventArgs) Handles ExitButton.Click
+        Application.Exit()
+    End Sub
+
+    Private Sub ReplayButton_Click(sender As Object, e As EventArgs) Handles ReplayButton.Click
+        Dim Level1 As New Level1()
+        Level1.Show()
+        Me.Hide()
+    End Sub
+
+End Class
