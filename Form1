@@ -1,0 +1,10 @@
+Public Class Form1
+    Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
+        Dim form2 As New Form2()
+        form2.Show()
+        form2.Timer1.Start()
+        Me.Hide()
+
+    End Sub
+
+End Class
